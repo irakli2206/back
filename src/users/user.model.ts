@@ -6,11 +6,11 @@ export const UsersSchema = new mongoose.Schema({
     userHandle: { type: String, required: true },
     userImage: { type: String, required: true },
     bio: { type: String, required: true },
-    posts: { type: Array<ObjectId>, required: true },
-    likedPosts: { type: Array<ObjectId>, required: true },
+    posts: { type: Array<String>, required: true },
+    likedPosts: { type: Array<String>, required: true },
 })
 
-export type UsersType = {
+export type UserType = {
     username: string
     userHandle: string
     userImage: string

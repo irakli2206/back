@@ -10,4 +10,10 @@ export class UsersController {
         let user = await this.usersService.getUser(userId)
         return user
     }
+
+    @Get(':userId/posts')
+    async getUserPosts(@Param('userId') userId: string) {
+        let userPosts = await this.usersService.getUserPosts(userId)
+        return userPosts
+    }
 }
