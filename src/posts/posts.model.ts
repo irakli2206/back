@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose'
 
 export const PostsSchema = new mongoose.Schema({
     userId: { type: String, required: true },
-
+    content: { type: String, required: true },
     comments: { type: Object, required: true },
     likes: { type: Array<String>, required: true },
     coordinates: { type: Object, required: true },
@@ -11,12 +11,18 @@ export const PostsSchema = new mongoose.Schema({
 
 export type PostType = {
     userId: string
-    comments: string
+    content: string
+    comments: Comment[]
     likes: string[]
     coordinates: Coordinates
 }
 
+export type Comment = {
+    userId: string 
+    content: string 
+}
+
 export type Coordinates = {
-    latitude: number 
+    latitude: number
     longitude: number
 }
