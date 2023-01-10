@@ -55,12 +55,24 @@ export class PostsService {
     return savedPost
   }
 
+  //also handles unliking
   async likePost(userId: string, postId: string) {
     const oldPost = await this.postsModel.findOne({ _id: postId })
     const oldUser = await this.usersModel.findOne({ _id: userId })
 
-    const newPost = { ...oldPost.toObject(), likes: [...oldPost.toObject().likes, new ObjectId(userId)] }
-    const newUser = { ...oldUser.toObject(), likedPosts: [...oldUser.toObject().likedPosts, new ObjectId(postId)] }
+    let newPost, newUser
+
+    if (oldPost.likes.includes(userId)) {
+      console.log('reached')
+      newPost = { ...oldPost.toObject(), likes: [...oldPost.toObject().likes.filter(user => user != userId)] }
+      newUser = { ...oldUser.toObject(), likedPosts: [...oldUser.toObject().likedPosts.filter(post => post != postId)] }
+
+    }
+    else {
+      newPost = { ...oldPost.toObject(), likes: [...oldPost.toObject().likes, new ObjectId(userId)] }
+      newUser = { ...oldUser.toObject(), likedPosts: [...oldUser.toObject().likedPosts, new ObjectId(postId)] }
+    }
+
 
     const updatedPost = await this.postsModel.updateOne({ _id: postId }, newPost)
     const updatedUser = await this.usersModel.updateOne({ _id: userId }, newUser)
