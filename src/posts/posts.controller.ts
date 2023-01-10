@@ -12,10 +12,7 @@ export class PostsController {
         @Body('minLong') minLong: number,
         @Body('maxLong') maxLong: number,
     ) {
-        console.log('lat ')
-        console.log(minLat)
         let posts = await this.postsService.getAreaPosts(minLat, maxLat, minLong, maxLong)
-        console.log(posts)
         return posts
     }
 

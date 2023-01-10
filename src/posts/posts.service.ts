@@ -19,6 +19,7 @@ export class PostsService {
       'coordinates.latitude': { $gt: minLat, $lt: maxLat },
       'coordinates.longitude': { $gt: minLong, $lt: maxLong },
     })
+
     return posts
   }
 
