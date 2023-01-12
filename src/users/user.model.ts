@@ -42,3 +42,10 @@ export type UserType = {
     posts: string[]
     likedPosts: string[]
 }
+
+export type UserDTO = {
+    userHandle: string
+    username: string
+    password: string
+    passwordConfirm: string
+}
