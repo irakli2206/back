@@ -78,10 +78,11 @@ export class PostsService {
     const updatedPost = await this.postsModel.updateOne({ _id: postId }, newPost)
     const updatedUser = await this.usersModel.updateOne({ _id: userId }, newUser)
 
-    return { updatedPost, updatedUser }
+    return { newPost, newUser }
   }
 
   async writePostComment(postId: string, userId: string, content: string) {
+    console.log(postId, userId, content)
     const oldPost = await this.postsModel.findOne({ _id: postId })
     const user = await this.usersModel.findOne({ _id: userId })
 
@@ -91,8 +92,8 @@ export class PostsService {
 
     const newPost = { ...oldPost.toObject(), comments: [...oldPost.toObject().comments, { userId, content }] }
     const updatedPost = await this.postsModel.updateOne({ _id: postId }, newPost)
-
-    return { updatedPost, user }
+    console.log(newPost)
+    return { newPost, user }
 
   }
 

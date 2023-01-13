@@ -42,8 +42,8 @@ export class PostsController {
         @Body('userId') userId: string,
         @Body('postId') postId: string
     ) {
-        let { updatedUser, updatedPost } = await this.postsService.likePost(userId, postId)
-        return { updatedUser, updatedPost }
+        let { newUser, newPost } = await this.postsService.likePost(userId, postId)
+        return { newUser, newPost }
     }
 
     @Post(':postId/write-comment')
@@ -52,7 +52,7 @@ export class PostsController {
         @Body('userId') userId: string,
         @Body('content') content: string,
     ) {
-        let { updatedPost, user } = await this.postsService.writePostComment(postId, userId, content)
-        return { updatedPost, user }
+        let { newPost, user } = await this.postsService.writePostComment(postId, userId, content)
+        return { newPost, user }
     }
 }
