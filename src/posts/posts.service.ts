@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
@@ -64,6 +64,7 @@ export class PostsService {
 
     if (oldPost.likes.includes(userId)) {
       console.log('reached')
+      console.log({ ...oldPost.toObject() })
       newPost = { ...oldPost.toObject(), likes: [...oldPost.toObject().likes.filter(user => user != userId)] }
       newUser = { ...oldUser.toObject(), likedPosts: [...oldUser.toObject().likedPosts.filter(post => post != postId)] }
 
@@ -78,6 +79,21 @@ export class PostsService {
     const updatedUser = await this.usersModel.updateOne({ _id: userId }, newUser)
 
     return { updatedPost, updatedUser }
+  }
+
+  async writePostComment(postId: string, userId: string, content: string) {
+    const oldPost = await this.postsModel.findOne({ _id: postId })
+    const user = await this.usersModel.findOne({ _id: userId })
+
+    if (!oldPost || !user) {
+      throw new BadRequestException('Invalid request data', { description: 'Invalid request data' })
+    }
+
+    const newPost = { ...oldPost.toObject(), comments: [...oldPost.toObject().comments, { userId, content }] }
+    const updatedPost = await this.postsModel.updateOne({ _id: postId }, newPost)
+
+    return { updatedPost, user }
+
   }
 
 }

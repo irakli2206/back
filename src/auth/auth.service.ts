@@ -2,7 +2,8 @@ import {
     UsersService
 } from 'src/users/users.service';
 import {
-    Injectable
+    BadRequestException,
+    Injectable,
 } from '@nestjs/common';
 import {
     JwtService
@@ -10,28 +11,38 @@ import {
 import {
     HashService
 } from 'src/users/hash.service';
+import { User, UserLogin } from 'src/users/user.model';
 
 @Injectable()
 export class AuthService {
-    constructor(private usersService: UsersService,
+    constructor(
+        private usersService: UsersService,
         private hashService: HashService,
         private jwtService: JwtService) { }
 
-    async validateUser(username: string, pass: string): Promise<any> {
-        const user = await this.usersService.getUserByUserhandle(username);
-        if (user && (await this.hashService.comparePassword(pass, user.password))) {
+
+    async validateUser(userhandle: string, password: string) {
+        const user = await this.usersService.getUserByUserhandle(userhandle)
+        if (user && (await this.hashService.comparePassword(password, user.password))) {
             return user;
         }
-        return null;
+        return null
     }
 
-    async login(user: any) {
-        const payload = {
-            username: user.email,
-            sub: user.id
-        };
+    async loginUser(userCreds: UserLogin) {
+        const { userhandle, password } = userCreds
+        let user = await this.usersService.getUserByUserhandle(userhandle)
+        if (!user) {
+            throw new BadRequestException('No such user exists', { cause: new Error(), description: 'No such user exists' });
+        }
+        let passwordIsRight = await this.hashService.comparePassword(password, user.password)
+        if (!passwordIsRight) {
+            throw new BadRequestException('Wrong password', { cause: new Error(), description: 'Wrong password' });
+        }
         return {
-            access_token: this.jwtService.sign(payload),
-        };
+            user,
+            access_token: this.jwtService.sign({ userhandle: user.userHandle })
+        }
     }
+
 }

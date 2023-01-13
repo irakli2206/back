@@ -17,20 +17,18 @@ export class UsersService {
 
   async getUser(userId: string) {
     const user = await this.usersModel.findOne({ _id: userId })
-    console.log(user)
     return user;
   }
 
-  async getUserByUserhandle(username: string) {
-    const user = await this.usersModel.findOne({ username: username })
-    console.log(user)
+  async getUserByUserhandle(userhandle: string) {
+    const user = await this.usersModel.findOne({ userHandle: userhandle })
     return user;
   }
 
   async registerUser(createUserDTO: UserDTO) {
     // validate DTO
     if (createUserDTO.password !== createUserDTO.passwordConfirm) {
-      throw new Error('Password mismatch')
+      throw new BadRequestException('Password mismatch', { cause: new Error(), description: 'Password mismatch' })
     }
     const transformedDTO = {
       ...createUserDTO,
@@ -43,13 +41,15 @@ export class UsersService {
     // check if user exists
     const user = await this.getUserByUserhandle(createUser.userHandle);
     if (user) {
-      throw new BadRequestException('User with this user handle already exists');
+      throw new BadRequestException('User already exists', { cause: new Error(), description: 'User already exists' });
     }
     // Hash Password
     createUser.password = await this.hashService.hashPassword(createUser.password);
 
     return createUser.save();
   }
+
+
 
   async getUserPosts(userId: string) {
     const { posts } = await this.usersModel.findOne({ _id: userId })

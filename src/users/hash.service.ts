@@ -10,7 +10,9 @@ import {
       return await bcrypt.hash(password, saltOrRounds);
     }
   
-    async comparePassword(password: string, hash) {
+    async comparePassword(password: string, hash: any) {
+      console.log(password)
+      console.log(hash)
       return await bcrypt.compare(password, hash)
     }
   }

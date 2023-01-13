@@ -49,3 +49,8 @@ export type UserDTO = {
     password: string
     passwordConfirm: string
 }
+
+export type UserLogin = {
+    userhandle: string 
+    password: string
+}

@@ -7,7 +7,7 @@ import { UsersService } from './users.service';
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
-    @UseGuards(AuthGuard('jwt'))
+    // @UseGuards(AuthGuard('jwt'))
     @Get(':userId')
     async getUser(@Param('userId') userId: string) {
         let user = await this.usersService.getUser(userId)

@@ -29,13 +29,14 @@ import {
 import {
     LocalStrategy
 } from 'src/strategy/local.strategy';
+import { UsersModule } from 'src/users/users.module';
+import { JwtStrategy } from 'src/strategy/jwt.strategy';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{
-            name: User.name,
-            schema: UsersSchema
-        }]),
+        UsersModule,
+        PassportModule,
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: {
@@ -44,6 +45,6 @@ import {
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService, UsersService, LocalStrategy, HashService],
+    providers: [AuthService, LocalStrategy],
 })
 export class AuthModule { }

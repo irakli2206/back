@@ -45,4 +45,14 @@ export class PostsController {
         let { updatedUser, updatedPost } = await this.postsService.likePost(userId, postId)
         return { updatedUser, updatedPost }
     }
+
+    @Post(':postId/write-comment')
+    async writePostComment(
+        @Param('postId') postId: string,
+        @Body('userId') userId: string,
+        @Body('content') content: string,
+    ) {
+        let { updatedPost, user } = await this.postsService.writePostComment(postId, userId, content)
+        return { updatedPost, user }
+    }
 }
