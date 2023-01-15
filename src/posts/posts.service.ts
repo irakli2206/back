@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { UserType } from 'src/users/user.model';
-import { PostType } from './posts.model';
+import { Coordinates, PostType } from './posts.model';
 
 @Injectable()
 export class PostsService {
@@ -38,19 +38,24 @@ export class PostsService {
     return { likesCount: likesCount, users: usersShortened }
   }
 
-  async createPost(userId: string, content: string) {
+  async createPost(userId: string, content: string, coordinates: Coordinates) {
     const newPost = new this.postsModel({
       userId,
       content,
       coordinates: {
-        latitude: 42,
-        longitude: 42
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude
       },
       comments: [],
       likes: []
     })
 
+
     const savedPost = await newPost.save()
+
+    const author = await this.usersModel.findById(userId)
+    const updatedAuthor = { ...author.toObject(), posts: [...author.toObject().posts, savedPost._id] }
+    await this.usersModel.updateOne({ _id: author._id }, updatedAuthor)
 
     return savedPost
   }
@@ -61,9 +66,8 @@ export class PostsService {
     const oldUser = await this.usersModel.findOne({ _id: userId })
 
     let newPost, newUser
-
+    console.log(oldUser)
     if (oldPost.likes.includes(userId)) {
-      console.log('reached')
       console.log({ ...oldPost.toObject() })
       newPost = { ...oldPost.toObject(), likes: [...oldPost.toObject().likes.filter(user => user != userId)] }
       newUser = { ...oldUser.toObject(), likedPosts: [...oldUser.toObject().likedPosts.filter(post => post != postId)] }

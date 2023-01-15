@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { Coordinates } from './posts.model';
 import { PostsService } from './posts.service';
 
 @Controller('api/posts')
@@ -31,9 +32,10 @@ export class PostsController {
     @Post('create')
     async createPost(
         @Body('userId') userId: string,
-        @Body('content') content: string
+        @Body('content') content: string,
+        @Body('coordinates') coordinates: Coordinates
     ) {
-        let createdPost = await this.postsService.createPost(userId, content)
+        let createdPost = await this.postsService.createPost(userId, content, coordinates)
         return createdPost
     }
 
@@ -42,6 +44,7 @@ export class PostsController {
         @Body('userId') userId: string,
         @Body('postId') postId: string
     ) {
+        console.log(userId, postId)
         let { newUser, newPost } = await this.postsService.likePost(userId, postId)
         return { newUser, newPost }
     }
