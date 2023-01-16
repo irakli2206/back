@@ -14,7 +14,13 @@ export class UsersController {
         return user
     }
 
-    @Post('/register')
+    @Get('get-by-handle/:userhandle')
+    async getUserByUserhandle(@Param('userhandle') userhandle: string) {
+        let user = await this.usersService.getUserByUserhandle(userhandle)
+        return user
+    }
+
+    @Post('register')
     registerUser(@Body() createUserDto: UserDTO) {
         return this.usersService.registerUser(createUserDto);
     }
