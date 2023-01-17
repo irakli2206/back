@@ -29,6 +29,12 @@ export class PostsService {
     return post;
   }
 
+  async getFilteredPosts(postIds: string[]) {
+    const posts = await this.postsModel.find({ _id: {$in: postIds} })
+    console.log(posts)
+    return posts;
+  }
+
   async getPostLikers(postId: string) {
     const { likes } = await this.postsModel.findOne({ _id: postId })
     const users = await this.usersModel.find({ _id: { $in: likes } })

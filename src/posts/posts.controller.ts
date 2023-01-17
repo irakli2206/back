@@ -23,6 +23,12 @@ export class PostsController {
         return post
     }
 
+    @Post('/filtered')
+    async getFilteredPosts(@Body('postIds') postIds: string[]) {
+        let post = await this.postsService.getFilteredPosts(postIds)
+        return post
+    }
+
     @Get(':postId/likes')
     async getPostLikers(@Param('postId') postId: string) {
         let user = await this.postsService.getPostLikers(postId)
